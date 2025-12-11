@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kilocode DVD Screensaver - CHAOS EDITION</title>
+    <title>Kilocode DVD Screensaver - CHRISTMAS CHAOS EDITION 🎄</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
 
         body {
             overflow: hidden;
-            background: #000;
+            background: #0a1628;
             width: 100vw;
             height: 100vh;
             font-family: 'Courier New', monospace;
@@ -173,17 +173,153 @@
                 transform: scale(0);
             }
         }
+
+        .snowflake {
+            position: fixed;
+            color: #fff;
+            font-size: 20px;
+            text-shadow: 0 0 5px #fff;
+            animation: snowfall linear infinite;
+            pointer-events: none;
+            z-index: 3;
+        }
+
+        @keyframes snowfall {
+            0% {
+                transform: translateY(-10vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) rotate(720deg);
+                opacity: 0.3;
+            }
+        }
+
+        .santa-hat {
+            position: absolute;
+            font-size: 60px;
+            transform: rotate(-15deg) translate(-10px, -45px);
+            pointer-events: none;
+            z-index: 11;
+            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5));
+        }
+
+        .christmas-lights {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            display: flex;
+            justify-content: space-around;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .light-bulb {
+            font-size: 25px;
+            animation: twinkle 1s ease-in-out infinite;
+        }
+
+        .light-bulb:nth-child(odd) {
+            animation-delay: 0.5s;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; filter: brightness(1.5); }
+            50% { opacity: 0.5; filter: brightness(0.8); }
+        }
+
+        .present {
+            position: absolute;
+            font-size: 50px;
+            animation: bounce-present 1s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 6;
+        }
+
+        @keyframes bounce-present {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .candy-cane-border {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: repeating-linear-gradient(
+                45deg,
+                #ff0000,
+                #ff0000 10px,
+                #ffffff 10px,
+                #ffffff 20px
+            );
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .christmas-disco {
+            animation: christmas-disco 0.5s linear infinite;
+        }
+
+        @keyframes christmas-disco {
+            0% { background: #c41e3a; }
+            25% { background: #165b33; }
+            50% { background: #bb2528; }
+            75% { background: #146b3a; }
+            100% { background: #c41e3a; }
+        }
     </style>
 </head>
 <body>
+    <div class="christmas-lights" id="lights"></div>
     <canvas class="matrix-rain" id="matrix"></canvas>
-    <img id="logo" src="logo.png" alt="Kilocode Logo">
+    <div class="candy-cane-border"></div>
+    <div id="logo-container" style="position: absolute;">
+        <span class="santa-hat">🎅</span>
+        <img id="logo" src="logo.png" alt="Kilocode Logo">
+    </div>
 
     <script>
         const logo = document.getElementById('logo');
+        const logoContainer = document.getElementById('logo-container');
         const body = document.body;
         const matrixCanvas = document.getElementById('matrix');
         const matrixCtx = matrixCanvas.getContext('2d');
+
+        // Create Christmas lights
+        const lightsContainer = document.getElementById('lights');
+        const lightColors = ['🔴', '🟢', '🔵', '🟡', '🟣', '⚪'];
+        for (let i = 0; i < 30; i++) {
+            const light = document.createElement('span');
+            light.className = 'light-bulb';
+            light.textContent = lightColors[i % lightColors.length];
+            light.style.animationDelay = (Math.random() * 2) + 's';
+            lightsContainer.appendChild(light);
+        }
+
+        // Create snowflakes
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.className = 'snowflake';
+            snowflake.textContent = ['❄', '❅', '❆', '✻', '✼', '❋'][Math.floor(Math.random() * 6)];
+            snowflake.style.left = Math.random() * 100 + 'vw';
+            snowflake.style.fontSize = (10 + Math.random() * 20) + 'px';
+            snowflake.style.animationDuration = (5 + Math.random() * 10) + 's';
+            snowflake.style.opacity = 0.5 + Math.random() * 0.5;
+            body.appendChild(snowflake);
+            
+            setTimeout(() => snowflake.remove(), 15000);
+        }
+
+        // Spawn snowflakes continuously
+        setInterval(createSnowflake, 200);
+        // Initial burst of snowflakes
+        for (let i = 0; i < 50; i++) {
+            setTimeout(createSnowflake, i * 50);
+        }
         
         const colors = [
             'hue-rotate(0deg)',
@@ -200,7 +336,7 @@
             'invert(1) hue-rotate(300deg)'
         ];
 
-        const emojis = ['💥', '🚀', '⭐', '🔥', '💫', '✨', '🌟', '💎', '🎉', '🎊', '🌈', '🦄', '🍕', '🎮', '👾', '🤖', '🛸', '🌮', '🍔', '🍟'];
+        const emojis = ['💥', '🚀', '⭐', '🔥', '💫', '✨', '🌟', '💎', '🎉', '🎊', '🎄', '🎅', '🤶', '🦌', '⛄', '🎁', '🔔', '❄️', '🌟', '🍪', '🥛', '🧦', '🕯️', '🎿', '☃️'];
         const messages = [
             'KILO RULES!',
             'CORNER HIT!',
@@ -213,7 +349,19 @@
             'EDGE LORD',
             'PHYSICS.EXE STOPPED',
             'CORNER INCOMING...',
-            'BOING BOING BOING'
+            'BOING BOING BOING',
+            'HO HO HO! 🎅',
+            'MERRY CHAOS-MAS!',
+            'JINGLE BELLS JINGLE BELLS',
+            'SANTA SAW THAT CORNER HIT',
+            'RUDOLPH WHO?!',
+            'DECK THE HALLS WITH BOUNCING LOGOS',
+            'FELIZ NAVI-BOUNCE',
+            'SILENT NIGHT? NOT HERE!',
+            'SANTA\'S FAVORITE SCREENSAVER',
+            '🎄 TREE-MENDOUS! 🎄',
+            'SLEIGH ALL DAY',
+            'YULE BE AMAZED'
         ];
 
         const alternateImages = [
@@ -221,7 +369,12 @@
             'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+NlTwvdGV4dD48L3N2Zz4=', // Pizza
             'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+mhDwvdGV4dD48L3N2Zz4=', // Unicorn
             'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+RvjwvdGV4dD48L3N2Zz4=', // Alien
-            'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+kljwvdGV4dD48L3N2Zz4=' // Robot
+            'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+kljwvdGV4dD48L3N2Zz4=', // Robot
+            'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+OhDwvdGV4dD48L3N2Zz4=', // Christmas Tree
+            'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+OgTwvdGV4dD48L3N2Zz4=', // Present
+            'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+FhTwvdGV4dD48L3N2Zz4=', // Santa
+            'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+4puEPC90ZXh0Pjwvc3ZnPg==', // Snowman
+            'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+mhjwvdGV4dD48L3N2Zz4=' // Reindeer
         ];
 
         let x = Math.random() * (window.innerWidth - 200);
@@ -338,8 +491,59 @@
         }
 
         function activateDiscoMode() {
-            body.classList.add('disco-mode');
-            setTimeout(() => body.classList.remove('disco-mode'), 2000);
+            // 50% chance for Christmas disco vs regular disco
+            if (Math.random() < 0.5) {
+                body.classList.add('christmas-disco');
+                setTimeout(() => body.classList.remove('christmas-disco'), 2000);
+            } else {
+                body.classList.add('disco-mode');
+                setTimeout(() => body.classList.remove('disco-mode'), 2000);
+            }
+        }
+
+        function createPresent() {
+            const present = document.createElement('div');
+            present.className = 'present';
+            present.textContent = ['🎁', '🎀', '📦'][Math.floor(Math.random() * 3)];
+            present.style.left = Math.random() * (window.innerWidth - 50) + 'px';
+            present.style.top = Math.random() * (window.innerHeight - 50) + 'px';
+            body.appendChild(present);
+            
+            setTimeout(() => present.remove(), 3000);
+        }
+
+        function createChristmasPortal() {
+            const portal = document.createElement('div');
+            portal.className = 'portal';
+            portal.style.background = 'radial-gradient(circle, #c41e3a, #165b33, #f8b229)';
+            portal.style.left = Math.random() * (window.innerWidth - 150) + 'px';
+            portal.style.top = Math.random() * (window.innerHeight - 150) + 'px';
+            body.appendChild(portal);
+            
+            setTimeout(() => {
+                // Teleport logo
+                x = parseFloat(portal.style.left) + 75 - 100;
+                y = parseFloat(portal.style.top) + 75 - 100;
+                createEmojiExplosion(x + 100, y + 100);
+                portal.remove();
+            }, 1000);
+        }
+
+        function jingleBells() {
+            // Create a cascade of bells
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    const bell = document.createElement('div');
+                    bell.className = 'emoji-explosion';
+                    bell.textContent = '🔔';
+                    bell.style.left = Math.random() * window.innerWidth + 'px';
+                    bell.style.top = Math.random() * window.innerHeight + 'px';
+                    bell.style.setProperty('--x', (Math.random() - 0.5) * 200 + 'px');
+                    bell.style.setProperty('--y', (Math.random() - 0.5) * 200 + 'px');
+                    body.appendChild(bell);
+                    setTimeout(() => bell.remove(), 1000);
+                }, i * 100);
+            }
         }
 
         function createTrail() {
@@ -371,6 +575,32 @@
                     // Size change
                     logo.style.width = (100 + Math.random() * 200) + 'px';
                     setTimeout(() => logo.style.width = '200px', 2000);
+                },
+                // Christmas-specific events
+                () => createPresent(),
+                () => createChristmasPortal(),
+                () => jingleBells(),
+                () => {
+                    // Snow blizzard - spawn extra snowflakes
+                    for (let i = 0; i < 30; i++) {
+                        setTimeout(createSnowflake, i * 30);
+                    }
+                },
+                () => {
+                    // Christmas tree trail
+                    for (let i = 0; i < 5; i++) {
+                        setTimeout(() => {
+                            const tree = document.createElement('div');
+                            tree.className = 'emoji-explosion';
+                            tree.textContent = '🎄';
+                            tree.style.left = (x + 100) + 'px';
+                            tree.style.top = (y + 100) + 'px';
+                            tree.style.setProperty('--x', '0px');
+                            tree.style.setProperty('--y', '0px');
+                            body.appendChild(tree);
+                            setTimeout(() => tree.remove(), 1000);
+                        }, i * 200);
+                    }
                 }
             ];
             
@@ -452,8 +682,8 @@
                 }
             }
 
-            logo.style.left = x + 'px';
-            logo.style.top = y + 'px';
+            logoContainer.style.left = x + 'px';
+            logoContainer.style.top = y + 'px';
 
             requestAnimationFrame(animate);
         }
@@ -463,10 +693,11 @@
             changeColor();
             animate();
             
-            // Start with a bang
+            // Start with a Christmas bang
             setTimeout(() => {
                 showSecretMessage();
                 createEmojiExplosion(window.innerWidth/2, window.innerHeight/2);
+                jingleBells();
             }, 1000);
         };
 

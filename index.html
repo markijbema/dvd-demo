@@ -271,6 +271,23 @@
             75% { background: #146b3a; }
             100% { background: #c41e3a; }
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            .disco-mode,
+            .christmas-disco,
+            .glitch,
+            .snowflake,
+            .matrix-column,
+            .emoji-explosion,
+            .present,
+            .trail,
+            .light-bulb {
+                animation: none !important;
+            }
+            .snowflake {
+                opacity: 0.7;
+            }
+        }
     </style>
 </head>
 <body>
@@ -338,6 +355,9 @@
         const DISCO_CHRISTMAS_CHANCE = 0.5;
         const MATRIX_DROP_RESET_CHANCE = 0.975;
 
+        // Check for reduced motion preference
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
         // Create Christmas lights
         const lightsContainer = document.getElementById('lights');
         const lightColors = ['🔴', '🟢', '🔵', '🟡', '🟣', '⚪'];
@@ -363,10 +383,12 @@
             setTimeout(() => snowflake.remove(), SNOWFLAKE_LIFETIME_MS);
         }
 
-        // Spawn snowflakes continuously
-        setInterval(createSnowflake, SNOWFLAKE_SPAWN_INTERVAL_MS);
-        // Initial burst of snowflakes
-        for (let i = 0; i < SNOWFLAKE_INITIAL_BURST; i++) {
+        // Spawn snowflakes continuously (reduced if prefers-reduced-motion)
+        const snowflakeSpawnInterval = prefersReducedMotion ? SNOWFLAKE_SPAWN_INTERVAL_MS * 5 : SNOWFLAKE_SPAWN_INTERVAL_MS;
+        setInterval(createSnowflake, snowflakeSpawnInterval);
+        // Initial burst of snowflakes (reduced if prefers-reduced-motion)
+        const snowflakeInitialBurst = prefersReducedMotion ? Math.floor(SNOWFLAKE_INITIAL_BURST / 5) : SNOWFLAKE_INITIAL_BURST;
+        for (let i = 0; i < snowflakeInitialBurst; i++) {
             setTimeout(createSnowflake, i * SNOWFLAKE_BURST_INTERVAL_MS);
         }
         
@@ -598,13 +620,13 @@
 
         function triggerRandomEvent() {
             const events = [
-                () => createEmojiExplosion(x + LOGO_WIDTH / 2, y + LOGO_HEIGHT / 2),
+                () => { if (!prefersReducedMotion) createEmojiExplosion(x + LOGO_WIDTH / 2, y + LOGO_HEIGHT / 2); },
                 () => showSecretMessage(),
-                () => activateMatrixRain(),
+                () => { if (!prefersReducedMotion) activateMatrixRain(); },
                 () => createPortal(),
-                () => glitchEffect(),
+                () => { if (!prefersReducedMotion) glitchEffect(); },
                 () => temporarilyChangeImage(),
-                () => activateDiscoMode(),
+                () => { if (!prefersReducedMotion) activateDiscoMode(); },
                 () => { speedMultiplier = SPEED_MULTIPLIER_MAX; setTimeout(() => speedMultiplier = 1, DISCO_DURATION_MS); },
                 () => { isSpinning = true; setTimeout(() => isSpinning = false, SPIN_DURATION_MS); },
                 () => {
@@ -622,14 +644,16 @@
                 () => createChristmasPortal(),
                 () => jingleBells(),
                 () => {
-                    // Snow blizzard - spawn extra snowflakes
-                    for (let i = 0; i < SNOW_BLIZZARD_COUNT; i++) {
+                    // Snow blizzard - spawn extra snowflakes (reduced if prefers-reduced-motion)
+                    const count = prefersReducedMotion ? Math.floor(SNOW_BLIZZARD_COUNT / 3) : SNOW_BLIZZARD_COUNT;
+                    for (let i = 0; i < count; i++) {
                         setTimeout(createSnowflake, i * SNOW_BLIZZARD_INTERVAL_MS);
                     }
                 },
                 () => {
                     // Christmas tree trail
-                    for (let i = 0; i < CHRISTMAS_TREE_COUNT; i++) {
+                    const count = prefersReducedMotion ? 1 : CHRISTMAS_TREE_COUNT;
+                    for (let i = 0; i < count; i++) {
                         setTimeout(() => {
                             const tree = document.createElement('div');
                             tree.className = 'emoji-explosion';
@@ -701,10 +725,12 @@
                 logo.classList.add('hit-corner');
                 setTimeout(() => logo.classList.remove('hit-corner'), CORNER_HIT_FLASH_DURATION_MS);
                 
-                // Corner hits trigger special events
-                createEmojiExplosion(x + logoWidth/2, y + logoHeight/2);
+                // Corner hits trigger special events (reduced if prefers-reduced-motion)
+                if (!prefersReducedMotion) {
+                    createEmojiExplosion(x + logoWidth/2, y + logoHeight/2);
+                    activateDiscoMode();
+                }
                 showSecretMessage();
-                activateDiscoMode();
             }
 
             if (hitEdge) {
@@ -716,9 +742,11 @@
                     triggerRandomEvent();
                 }
                 
-                // Every 10 bounces, go extra crazy
+                // Every 10 bounces, go extra crazy (reduced if prefers-reduced-motion)
                 if (bounceCount % MATRIX_EVENT_INTERVAL === 0) {
-                    activateMatrixRain();
+                    if (!prefersReducedMotion) {
+                        activateMatrixRain();
+                    }
                     createPortal();
                 }
             }
@@ -734,11 +762,13 @@
             changeColor();
             animate();
             
-            // Start with a Christmas bang
+            // Start with a Christmas bang (reduced if prefers-reduced-motion)
             setTimeout(() => {
                 showSecretMessage();
-                createEmojiExplosion(window.innerWidth/2, window.innerHeight/2);
-                jingleBells();
+                if (!prefersReducedMotion) {
+                    createEmojiExplosion(window.innerWidth/2, window.innerHeight/2);
+                    jingleBells();
+                }
             }, STARTUP_DELAY_MS);
         };
 

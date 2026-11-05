@@ -289,14 +289,63 @@
         const matrixCanvas = document.getElementById('matrix');
         const matrixCtx = matrixCanvas.getContext('2d');
 
+        // Configuration constants
+        const LOGO_WIDTH = 200;
+        const LOGO_HEIGHT = 200;
+        const INITIAL_SPEED = 2;
+        const SPEED_MULTIPLIER_MAX = 3;
+        const TRAIL_PROBABILITY = 0.05;
+        const RANDOM_EVENT_INTERVAL_MS = 15000;
+        const RANDOM_EVENT_CHANCE = 0.3;
+        const BOUNCE_EVENT_INTERVAL = 5;
+        const MATRIX_EVENT_INTERVAL = 10;
+        const MATRIX_COLUMN_WIDTH = 20;
+        const MATRIX_DURATION_MS = 3000;
+        const MATRIX_FADE_ALPHA = 0.05;
+        const SNOWFLAKE_SPAWN_INTERVAL_MS = 200;
+        const SNOWFLAKE_LIFETIME_MS = 15000;
+        const SNOWFLAKE_INITIAL_BURST = 50;
+        const SNOWFLAKE_BURST_INTERVAL_MS = 50;
+        const PORTAL_SIZE = 150;
+        const PORTAL_DURATION_MS = 1000;
+        const PORTAL_OFFSET = 75;
+        const DISCO_DURATION_MS = 2000;
+        const PRESENT_SIZE = 50;
+        const PRESENT_DURATION_MS = 3000;
+        const SECRET_MESSAGE_DURATION_MS = 3000;
+        const EMOJI_EXPLOSION_COUNT = 8;
+        const EMOJI_EXPLOSION_DISTANCE_MIN = 100;
+        const EMOJI_EXPLOSION_DISTANCE_MAX = 200;
+        const EMOJI_EXPLOSION_DURATION_MS = 1000;
+        const GLITCH_DURATION_MS = 300;
+        const IMAGE_CHANGE_DURATION_MS = 2000;
+        const SPIN_DURATION_MS = 2000;
+        const SPIN_ANGLE_INCREMENT = 10;
+        const GRAVITY_REVERSE_DURATION_MS = 1500;
+        const SIZE_CHANGE_DURATION_MS = 2000;
+        const SIZE_CHANGE_MIN = 100;
+        const SIZE_CHANGE_MAX = 300;
+        const SNOW_BLIZZARD_COUNT = 30;
+        const SNOW_BLIZZARD_INTERVAL_MS = 30;
+        const CHRISTMAS_TREE_COUNT = 5;
+        const CHRISTMAS_TREE_INTERVAL_MS = 200;
+        const JINGLE_BELL_COUNT = 10;
+        const JINGLE_BELL_INTERVAL_MS = 100;
+        const LIGHT_COUNT = 30;
+        const LIGHT_ANIMATION_DELAY_MAX = 2;
+        const CORNER_HIT_FLASH_DURATION_MS = 300;
+        const STARTUP_DELAY_MS = 1000;
+        const DISCO_CHRISTMAS_CHANCE = 0.5;
+        const MATRIX_DROP_RESET_CHANCE = 0.975;
+
         // Create Christmas lights
         const lightsContainer = document.getElementById('lights');
         const lightColors = ['🔴', '🟢', '🔵', '🟡', '🟣', '⚪'];
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < LIGHT_COUNT; i++) {
             const light = document.createElement('span');
             light.className = 'light-bulb';
             light.textContent = lightColors[i % lightColors.length];
-            light.style.animationDelay = (Math.random() * 2) + 's';
+            light.style.animationDelay = (Math.random() * LIGHT_ANIMATION_DELAY_MAX) + 's';
             lightsContainer.appendChild(light);
         }
 
@@ -311,14 +360,14 @@
             snowflake.style.opacity = 0.5 + Math.random() * 0.5;
             body.appendChild(snowflake);
             
-            setTimeout(() => snowflake.remove(), 15000);
+            setTimeout(() => snowflake.remove(), SNOWFLAKE_LIFETIME_MS);
         }
 
         // Spawn snowflakes continuously
-        setInterval(createSnowflake, 200);
+        setInterval(createSnowflake, SNOWFLAKE_SPAWN_INTERVAL_MS);
         // Initial burst of snowflakes
-        for (let i = 0; i < 50; i++) {
-            setTimeout(createSnowflake, i * 50);
+        for (let i = 0; i < SNOWFLAKE_INITIAL_BURST; i++) {
+            setTimeout(createSnowflake, i * SNOWFLAKE_BURST_INTERVAL_MS);
         }
         
         const colors = [
@@ -377,10 +426,10 @@
             'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1zaXplPSI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSI+8J+mhjwvdGV4dD48L3N2Zz4=' // Reindeer
         ];
 
-        let x = Math.random() * (window.innerWidth - 200);
-        let y = Math.random() * (window.innerHeight - 200);
-        let dx = 2;
-        let dy = 2;
+        let x = Math.random() * (window.innerWidth - LOGO_WIDTH);
+        let y = Math.random() * (window.innerHeight - LOGO_HEIGHT);
+        let dx = INITIAL_SPEED;
+        let dy = INITIAL_SPEED;
         let currentColorIndex = 0;
         let bounceCount = 0;
         let isMatrixActive = false;
@@ -399,20 +448,20 @@
         }
 
         function createEmojiExplosion(centerX, centerY) {
-            for (let i = 0; i < 8; i++) {
+            for (let i = 0; i < EMOJI_EXPLOSION_COUNT; i++) {
                 const emoji = document.createElement('div');
                 emoji.className = 'emoji-explosion';
                 emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
                 emoji.style.left = centerX + 'px';
                 emoji.style.top = centerY + 'px';
                 
-                const angle = (Math.PI * 2 * i) / 8;
-                const distance = 100 + Math.random() * 100;
+                const angle = (Math.PI * 2 * i) / EMOJI_EXPLOSION_COUNT;
+                const distance = EMOJI_EXPLOSION_DISTANCE_MIN + Math.random() * (EMOJI_EXPLOSION_DISTANCE_MAX - EMOJI_EXPLOSION_DISTANCE_MIN);
                 emoji.style.setProperty('--x', Math.cos(angle) * distance + 'px');
                 emoji.style.setProperty('--y', Math.sin(angle) * distance + 'px');
                 
                 body.appendChild(emoji);
-                setTimeout(() => emoji.remove(), 1000);
+                setTimeout(() => emoji.remove(), EMOJI_EXPLOSION_DURATION_MS);
             }
         }
 
@@ -423,7 +472,7 @@
             message.style.left = Math.random() * (window.innerWidth - 300) + 'px';
             message.style.top = Math.random() * (window.innerHeight - 100) + 'px';
             body.appendChild(message);
-            setTimeout(() => message.remove(), 3000);
+            setTimeout(() => message.remove(), SECRET_MESSAGE_DURATION_MS);
         }
 
         function activateMatrixRain() {
@@ -433,21 +482,21 @@
             matrixCanvas.width = window.innerWidth;
             matrixCanvas.height = window.innerHeight;
             
-            const columns = Math.floor(window.innerWidth / 20);
+            const columns = Math.floor(window.innerWidth / MATRIX_COLUMN_WIDTH);
             const drops = Array(columns).fill(0);
             
             const matrixInterval = setInterval(() => {
-                matrixCtx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                matrixCtx.fillStyle = `rgba(0, 0, 0, ${MATRIX_FADE_ALPHA})`;
                 matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
                 
                 matrixCtx.fillStyle = '#0f0';
-                matrixCtx.font = '20px monospace';
+                matrixCtx.font = `${MATRIX_COLUMN_WIDTH}px monospace`;
                 
                 for (let i = 0; i < drops.length; i++) {
                     const text = String.fromCharCode(Math.random() * 128);
-                    matrixCtx.fillText(text, i * 20, drops[i] * 20);
+                    matrixCtx.fillText(text, i * MATRIX_COLUMN_WIDTH, drops[i] * MATRIX_COLUMN_WIDTH);
                     
-                    if (drops[i] * 20 > matrixCanvas.height && Math.random() > 0.975) {
+                    if (drops[i] * MATRIX_COLUMN_WIDTH > matrixCanvas.height && Math.random() > MATRIX_DROP_RESET_CHANCE) {
                         drops[i] = 0;
                     }
                     drops[i]++;
@@ -458,28 +507,28 @@
                 clearInterval(matrixInterval);
                 matrixCtx.clearRect(0, 0, matrixCanvas.width, matrixCanvas.height);
                 isMatrixActive = false;
-            }, 3000);
+            }, MATRIX_DURATION_MS);
         }
 
         function createPortal() {
             const portal = document.createElement('div');
             portal.className = 'portal';
-            portal.style.left = Math.random() * (window.innerWidth - 150) + 'px';
-            portal.style.top = Math.random() * (window.innerHeight - 150) + 'px';
+            portal.style.left = Math.random() * (window.innerWidth - PORTAL_SIZE) + 'px';
+            portal.style.top = Math.random() * (window.innerHeight - PORTAL_SIZE) + 'px';
             body.appendChild(portal);
             
             setTimeout(() => {
                 // Teleport logo
-                x = parseFloat(portal.style.left) + 75 - 100;
-                y = parseFloat(portal.style.top) + 75 - 100;
-                createEmojiExplosion(x + 100, y + 100);
+                x = parseFloat(portal.style.left) + PORTAL_OFFSET - LOGO_WIDTH / 2;
+                y = parseFloat(portal.style.top) + PORTAL_OFFSET - LOGO_HEIGHT / 2;
+                createEmojiExplosion(x + LOGO_WIDTH / 2, y + LOGO_HEIGHT / 2);
                 portal.remove();
-            }, 1000);
+            }, PORTAL_DURATION_MS);
         }
 
         function glitchEffect() {
             logo.classList.add('glitch');
-            setTimeout(() => logo.classList.remove('glitch'), 300);
+            setTimeout(() => logo.classList.remove('glitch'), GLITCH_DURATION_MS);
         }
 
         function temporarilyChangeImage() {
@@ -487,17 +536,17 @@
             logo.src = randomImage;
             setTimeout(() => {
                 logo.src = originalSrc;
-            }, 2000);
+            }, IMAGE_CHANGE_DURATION_MS);
         }
 
         function activateDiscoMode() {
             // 50% chance for Christmas disco vs regular disco
-            if (Math.random() < 0.5) {
+            if (Math.random() < DISCO_CHRISTMAS_CHANCE) {
                 body.classList.add('christmas-disco');
-                setTimeout(() => body.classList.remove('christmas-disco'), 2000);
+                setTimeout(() => body.classList.remove('christmas-disco'), DISCO_DURATION_MS);
             } else {
                 body.classList.add('disco-mode');
-                setTimeout(() => body.classList.remove('disco-mode'), 2000);
+                setTimeout(() => body.classList.remove('disco-mode'), DISCO_DURATION_MS);
             }
         }
 
@@ -505,33 +554,33 @@
             const present = document.createElement('div');
             present.className = 'present';
             present.textContent = ['🎁', '🎀', '📦'][Math.floor(Math.random() * 3)];
-            present.style.left = Math.random() * (window.innerWidth - 50) + 'px';
-            present.style.top = Math.random() * (window.innerHeight - 50) + 'px';
+            present.style.left = Math.random() * (window.innerWidth - PRESENT_SIZE) + 'px';
+            present.style.top = Math.random() * (window.innerHeight - PRESENT_SIZE) + 'px';
             body.appendChild(present);
             
-            setTimeout(() => present.remove(), 3000);
+            setTimeout(() => present.remove(), PRESENT_DURATION_MS);
         }
 
         function createChristmasPortal() {
             const portal = document.createElement('div');
             portal.className = 'portal';
             portal.style.background = 'radial-gradient(circle, #c41e3a, #165b33, #f8b229)';
-            portal.style.left = Math.random() * (window.innerWidth - 150) + 'px';
-            portal.style.top = Math.random() * (window.innerHeight - 150) + 'px';
+            portal.style.left = Math.random() * (window.innerWidth - PORTAL_SIZE) + 'px';
+            portal.style.top = Math.random() * (window.innerHeight - PORTAL_SIZE) + 'px';
             body.appendChild(portal);
             
             setTimeout(() => {
                 // Teleport logo
-                x = parseFloat(portal.style.left) + 75 - 100;
-                y = parseFloat(portal.style.top) + 75 - 100;
-                createEmojiExplosion(x + 100, y + 100);
+                x = parseFloat(portal.style.left) + PORTAL_OFFSET - LOGO_WIDTH / 2;
+                y = parseFloat(portal.style.top) + PORTAL_OFFSET - LOGO_HEIGHT / 2;
+                createEmojiExplosion(x + LOGO_WIDTH / 2, y + LOGO_HEIGHT / 2);
                 portal.remove();
-            }, 1000);
+            }, PORTAL_DURATION_MS);
         }
 
         function jingleBells() {
             // Create a cascade of bells
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < JINGLE_BELL_COUNT; i++) {
                 setTimeout(() => {
                     const bell = document.createElement('div');
                     bell.className = 'emoji-explosion';
@@ -541,40 +590,40 @@
                     bell.style.setProperty('--x', (Math.random() - 0.5) * 200 + 'px');
                     bell.style.setProperty('--y', (Math.random() - 0.5) * 200 + 'px');
                     body.appendChild(bell);
-                    setTimeout(() => bell.remove(), 1000);
-                }, i * 100);
+                    setTimeout(() => bell.remove(), EMOJI_EXPLOSION_DURATION_MS);
+                }, i * JINGLE_BELL_INTERVAL_MS);
             }
         }
 
         function createTrail() {
             const trail = document.createElement('div');
             trail.className = 'trail';
-            trail.style.left = (x + 90) + 'px';
-            trail.style.top = (y + 90) + 'px';
+            trail.style.left = (x + LOGO_WIDTH / 2 - 10) + 'px';
+            trail.style.top = (y + LOGO_HEIGHT / 2 - 10) + 'px';
             body.appendChild(trail);
-            setTimeout(() => trail.remove(), 1000);
+            setTimeout(() => trail.remove(), EMOJI_EXPLOSION_DURATION_MS);
         }
 
         function triggerRandomEvent() {
             const events = [
-                () => createEmojiExplosion(x + 100, y + 100),
+                () => createEmojiExplosion(x + LOGO_WIDTH / 2, y + LOGO_HEIGHT / 2),
                 () => showSecretMessage(),
                 () => activateMatrixRain(),
                 () => createPortal(),
                 () => glitchEffect(),
                 () => temporarilyChangeImage(),
                 () => activateDiscoMode(),
-                () => { speedMultiplier = 3; setTimeout(() => speedMultiplier = 1, 2000); },
-                () => { isSpinning = true; setTimeout(() => isSpinning = false, 2000); },
+                () => { speedMultiplier = SPEED_MULTIPLIER_MAX; setTimeout(() => speedMultiplier = 1, DISCO_DURATION_MS); },
+                () => { isSpinning = true; setTimeout(() => isSpinning = false, SPIN_DURATION_MS); },
                 () => {
                     // Reverse gravity temporarily
                     dy = -Math.abs(dy);
-                    setTimeout(() => dy = Math.abs(dy), 1500);
+                    setTimeout(() => dy = Math.abs(dy), GRAVITY_REVERSE_DURATION_MS);
                 },
                 () => {
                     // Size change
-                    logo.style.width = (100 + Math.random() * 200) + 'px';
-                    setTimeout(() => logo.style.width = '200px', 2000);
+                    logo.style.width = (SIZE_CHANGE_MIN + Math.random() * (SIZE_CHANGE_MAX - SIZE_CHANGE_MIN)) + 'px';
+                    setTimeout(() => logo.style.width = `${LOGO_WIDTH}px`, SIZE_CHANGE_DURATION_MS);
                 },
                 // Christmas-specific events
                 () => createPresent(),
@@ -582,24 +631,24 @@
                 () => jingleBells(),
                 () => {
                     // Snow blizzard - spawn extra snowflakes
-                    for (let i = 0; i < 30; i++) {
-                        setTimeout(createSnowflake, i * 30);
+                    for (let i = 0; i < SNOW_BLIZZARD_COUNT; i++) {
+                        setTimeout(createSnowflake, i * SNOW_BLIZZARD_INTERVAL_MS);
                     }
                 },
                 () => {
                     // Christmas tree trail
-                    for (let i = 0; i < 5; i++) {
+                    for (let i = 0; i < CHRISTMAS_TREE_COUNT; i++) {
                         setTimeout(() => {
                             const tree = document.createElement('div');
                             tree.className = 'emoji-explosion';
                             tree.textContent = '🎄';
-                            tree.style.left = (x + 100) + 'px';
-                            tree.style.top = (y + 100) + 'px';
+                            tree.style.left = (x + LOGO_WIDTH / 2) + 'px';
+                            tree.style.top = (y + LOGO_HEIGHT / 2) + 'px';
                             tree.style.setProperty('--x', '0px');
                             tree.style.setProperty('--y', '0px');
                             body.appendChild(tree);
-                            setTimeout(() => tree.remove(), 1000);
-                        }, i * 200);
+                            setTimeout(() => tree.remove(), EMOJI_EXPLOSION_DURATION_MS);
+                        }, i * CHRISTMAS_TREE_INTERVAL_MS);
                     }
                 }
             ];
@@ -616,13 +665,13 @@
             y += dy * speedMultiplier;
 
             // Create trail occasionally
-            if (Math.random() < 0.05) {
+            if (Math.random() < TRAIL_PROBABILITY) {
                 createTrail();
             }
 
             // Spin if activated
             if (isSpinning) {
-                rotationAngle += 10;
+                rotationAngle += SPIN_ANGLE_INCREMENT;
                 logo.style.transform = `rotate(${rotationAngle}deg)`;
             } else {
                 logo.style.transform = 'rotate(0deg)';
@@ -658,7 +707,7 @@
                 (y <= 0 || y + logoHeight >= window.innerHeight)) {
                 hitCorner = true;
                 logo.classList.add('hit-corner');
-                setTimeout(() => logo.classList.remove('hit-corner'), 300);
+                setTimeout(() => logo.classList.remove('hit-corner'), CORNER_HIT_FLASH_DURATION_MS);
                 
                 // Corner hits trigger special events
                 createEmojiExplosion(x + logoWidth/2, y + logoHeight/2);
@@ -671,12 +720,12 @@
                 bounceCount++;
                 
                 // Every 5 bounces, trigger a random event
-                if (bounceCount % 5 === 0) {
+                if (bounceCount % BOUNCE_EVENT_INTERVAL === 0) {
                     triggerRandomEvent();
                 }
                 
                 // Every 10 bounces, go extra crazy
-                if (bounceCount % 10 === 0) {
+                if (bounceCount % MATRIX_EVENT_INTERVAL === 0) {
                     activateMatrixRain();
                     createPortal();
                 }
@@ -698,7 +747,7 @@
                 showSecretMessage();
                 createEmojiExplosion(window.innerWidth/2, window.innerHeight/2);
                 jingleBells();
-            }, 1000);
+            }, STARTUP_DELAY_MS);
         };
 
         // Handle window resize
@@ -719,10 +768,10 @@
 
         // Random events every 10-20 seconds
         setInterval(() => {
-            if (Math.random() < 0.3) {
+            if (Math.random() < RANDOM_EVENT_CHANCE) {
                 triggerRandomEvent();
             }
-        }, 15000);
+        }, RANDOM_EVENT_INTERVAL_MS);
     </script>
 </body>
 </html>

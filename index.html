@@ -510,9 +510,14 @@
             }, MATRIX_DURATION_MS);
         }
 
-        function createPortal() {
+        function createPortal(options = {}) {
+            const { background = null } = options;
+            
             const portal = document.createElement('div');
             portal.className = 'portal';
+            if (background) {
+                portal.style.background = background;
+            }
             portal.style.left = Math.random() * (window.innerWidth - PORTAL_SIZE) + 'px';
             portal.style.top = Math.random() * (window.innerHeight - PORTAL_SIZE) + 'px';
             body.appendChild(portal);
@@ -524,6 +529,10 @@
                 createEmojiExplosion(x + LOGO_WIDTH / 2, y + LOGO_HEIGHT / 2);
                 portal.remove();
             }, PORTAL_DURATION_MS);
+        }
+
+        function createChristmasPortal() {
+            createPortal({ background: 'radial-gradient(circle, #c41e3a, #165b33, #f8b229)' });
         }
 
         function glitchEffect() {
@@ -559,23 +568,6 @@
             body.appendChild(present);
             
             setTimeout(() => present.remove(), PRESENT_DURATION_MS);
-        }
-
-        function createChristmasPortal() {
-            const portal = document.createElement('div');
-            portal.className = 'portal';
-            portal.style.background = 'radial-gradient(circle, #c41e3a, #165b33, #f8b229)';
-            portal.style.left = Math.random() * (window.innerWidth - PORTAL_SIZE) + 'px';
-            portal.style.top = Math.random() * (window.innerHeight - PORTAL_SIZE) + 'px';
-            body.appendChild(portal);
-            
-            setTimeout(() => {
-                // Teleport logo
-                x = parseFloat(portal.style.left) + PORTAL_OFFSET - LOGO_WIDTH / 2;
-                y = parseFloat(portal.style.top) + PORTAL_OFFSET - LOGO_HEIGHT / 2;
-                createEmojiExplosion(x + LOGO_WIDTH / 2, y + LOGO_HEIGHT / 2);
-                portal.remove();
-            }, PORTAL_DURATION_MS);
         }
 
         function jingleBells() {
